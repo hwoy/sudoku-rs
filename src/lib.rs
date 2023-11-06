@@ -190,7 +190,7 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
     }
 }
 
-fn seed_from_entropy() -> sudoku_sys::URND32 {
+pub fn seed_from_entropy() -> sudoku_sys::URND32 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()

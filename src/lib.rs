@@ -197,7 +197,7 @@ fn seed_from_entropy() -> sudoku_sys::URND32 {
         .as_millis() as sudoku_sys::URND32
 }
 
-mod prelude {
+pub mod prelude {
     pub extern crate sudoku_sys;
     pub use crate::sgs_board_impl;
     pub use crate::sgs_game_impl;

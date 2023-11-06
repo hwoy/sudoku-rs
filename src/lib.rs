@@ -1,7 +1,8 @@
 #![allow(non_camel_case_types)]
+#![allow(dead_code)]
 
 pub extern crate sudoku_sys;
-use std::os::raw::c_uint;
+use std::os::raw::{c_int, c_uint};
 
 pub trait GLIBCRNG_impl {
     fn new() -> Self;
@@ -58,6 +59,29 @@ pub trait sgs_game_impl {
     fn seed(&mut self, seed: sudoku_sys::URND32);
     fn rand(&mut self) -> c_uint;
     fn random(&mut self, min: c_uint, max: c_uint) -> c_uint;
+
+    fn findvalueone(&mut self, x: c_uint, y: c_uint) -> c_uint;
+    fn findvalueunique(&mut self, x: c_uint, y: c_uint) -> c_uint;
+
+    fn getobstruct(&mut self) -> c_uint;
+
+    fn genboard(&mut self) -> c_int;
+
+    fn completeboard(&self) -> c_int;
+
+    fn resetboard(&mut self);
+
+    fn findboard(&mut self) -> sudoku_sys::sgt_bid;
+
+    fn getbid(&self) -> sudoku_sys::sgt_bid;
+
+    fn createsudoku(&mut self);
+
+    fn createsudoku_rnd(&mut self, sd: c_uint);
+
+    fn setnblank(&mut self, numblank: c_uint);
+
+    fn getnblank(&self) -> c_uint;
 }
 
 impl sgs_game_impl for sudoku_sys::sgs_game {
@@ -116,4 +140,67 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
     fn random(&mut self, min: c_uint, max: c_uint) -> c_uint {
         unsafe { sudoku_sys::sgf_random(self, min, max) }
     }
+
+    fn findvalueone(&mut self, x: c_uint, y: c_uint) -> c_uint {
+        unsafe { sudoku_sys::sgf_findvalueone(self, x, y) }
+    }
+
+    fn findvalueunique(&mut self, x: c_uint, y: c_uint) -> c_uint {
+        unsafe { sudoku_sys::sgf_findvalueunique(self, x, y) }
+    }
+
+    fn getobstruct(&mut self) -> c_uint {
+        unsafe { sudoku_sys::sgf_getobstruct(self) }
+    }
+
+    fn genboard(&mut self) -> c_int {
+        unsafe { sudoku_sys::sgf_genboard(self) }
+    }
+
+    fn completeboard(&self) -> c_int {
+        unsafe { sudoku_sys::sgf_completeboard(self) }
+    }
+
+    fn resetboard(&mut self) {
+        unsafe { sudoku_sys::sgf_resetboard(self) }
+    }
+
+    fn findboard(&mut self) -> sudoku_sys::sgt_bid {
+        unsafe { sudoku_sys::sgf_findboard(self) }
+    }
+
+    fn getbid(&self) -> sudoku_sys::sgt_bid {
+        unsafe { sudoku_sys::sgf_getbid(self) }
+    }
+
+    fn createsudoku(&mut self) {
+        unsafe { sudoku_sys::sgf_createsudoku(self) }
+    }
+
+    fn createsudoku_rnd(&mut self, sd: c_uint) {
+        unsafe { sudoku_sys::sgf_createsudoku_rnd(self, sd) }
+    }
+
+    fn setnblank(&mut self, numblank: c_uint) {
+        unsafe { sudoku_sys::sgf_setnblank(self, numblank) }
+    }
+
+    fn getnblank(&self) -> c_uint {
+        unsafe { sudoku_sys::sgf_getnblank(self) }
+    }
+}
+
+fn seed_from_entropy() -> sudoku_sys::URND32 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as sudoku_sys::URND32
+}
+
+mod prelude {
+    pub extern crate sudoku_sys;
+    pub use crate::sgs_board_impl;
+    pub use crate::sgs_game_impl;
+    pub use crate::sgs_unit_impl;
+    pub use crate::GLIBCRNG_impl;
 }

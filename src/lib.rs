@@ -80,6 +80,8 @@ pub trait sgs_game_impl {
 
     fn createsudoku_rnd(&mut self, sd: c_uint);
 
+    fn to_sudoku_rnd(self, sd: c_uint) -> Self;
+
     fn setnblank(&mut self, numblank: c_uint) -> &mut Self;
 
     fn getnblank(&self) -> c_uint;
@@ -191,6 +193,12 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
 
     fn createsudoku_rnd(&mut self, sd: c_uint) {
         unsafe { sudoku_sys::sgf_createsudoku_rnd(self, sd) }
+    }
+
+    fn to_sudoku_rnd(self, sd: c_uint) -> Self {
+        let mut _self = self;
+        Self::createsudoku_rnd(&mut _self, sd);
+        _self
     }
 
     fn setnblank(&mut self, numblank: c_uint) -> &mut Self {

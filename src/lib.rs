@@ -25,7 +25,6 @@ impl sgs_unit_impl for sudoku_sys::sgs_unit {
             idy: 0,
             idz: 0,
             value: 0,
-            valuep: 0,
         }
     }
 }
@@ -77,7 +76,7 @@ pub trait sgs_game_impl {
     fn getvalue_y(&self, x: c_uint) -> sudoku_sys::sgt_set;
 
     fn getvalue_z(&self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set;
-    fn getvalue_p(&mut self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set;
+    fn getvalue_p(&self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set;
 
     fn countvalue(&self, x: c_uint, y: c_uint) -> c_uint;
 
@@ -85,10 +84,10 @@ pub trait sgs_game_impl {
     fn rand(&mut self) -> c_uint;
     fn random(&mut self, min: c_uint, max: c_uint) -> c_uint;
 
-    fn findvalueone(&mut self, x: c_uint, y: c_uint) -> c_uint;
-    fn findvalueunique(&mut self, x: c_uint, y: c_uint) -> c_uint;
+    fn findvalueone(&self, x: c_uint, y: c_uint) -> c_uint;
+    fn findvalueunique(&self, x: c_uint, y: c_uint) -> c_uint;
 
-    fn getobstruct(&mut self) -> c_uint;
+    fn getobstruct(&self) -> c_uint;
 
     fn genboard(&mut self) -> c_int;
 
@@ -141,7 +140,7 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         unsafe { sudoku_sys::sgf_getvalue_z(self, x, y) }
     }
 
-    fn getvalue_p(&mut self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set {
+    fn getvalue_p(&self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set {
         unsafe { sudoku_sys::sgf_getvalue_p(self, x, y) }
     }
 
@@ -162,15 +161,15 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         unsafe { sudoku_sys::sgf_random(self, min, max) }
     }
 
-    fn findvalueone(&mut self, x: c_uint, y: c_uint) -> c_uint {
+    fn findvalueone(&self, x: c_uint, y: c_uint) -> c_uint {
         unsafe { sudoku_sys::sgf_findvalueone(self, x, y) }
     }
 
-    fn findvalueunique(&mut self, x: c_uint, y: c_uint) -> c_uint {
+    fn findvalueunique(&self, x: c_uint, y: c_uint) -> c_uint {
         unsafe { sudoku_sys::sgf_findvalueunique(self, x, y) }
     }
 
-    fn getobstruct(&mut self) -> c_uint {
+    fn getobstruct(&self) -> c_uint {
         unsafe { sudoku_sys::sgf_getobstruct(self) }
     }
 

@@ -82,6 +82,8 @@ pub trait sgs_game_impl {
 
     fn to_sudoku_rnd(self, sd: c_uint) -> Self;
 
+    fn board_unit(&self) -> &[[sudoku_sys::sgs_unit; 9]; 9];
+
     fn setnblank(&mut self, numblank: c_uint) -> &mut Self;
 
     fn getnblank(&self) -> c_uint;
@@ -199,6 +201,10 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         let mut _self = self;
         Self::createsudoku_rnd(&mut _self, sd);
         _self
+    }
+
+    fn board_unit(&self) -> &[[sudoku_sys::sgs_unit; 9]; 9] {
+        &self.board.unit
     }
 
     fn setnblank(&mut self, numblank: c_uint) -> &mut Self {

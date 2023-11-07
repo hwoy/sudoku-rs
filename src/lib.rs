@@ -43,7 +43,8 @@ impl sgs_board_impl for sudoku_sys::sgs_board {
 }
 
 pub trait sgs_game_impl {
-    fn new(bid: sudoku_sys::sgt_bid, numblank: c_uint) -> Self;
+    fn new_with(seed: sudoku_sys::URND32, bid: sudoku_sys::sgt_bid, numblank: c_uint) -> Self;
+    fn new() -> Self;
     fn setvalue(&mut self, value: sudoku_sys::sgt_set, x: c_uint, y: c_uint);
     fn getvalue(&self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set;
 
@@ -85,8 +86,8 @@ pub trait sgs_game_impl {
 }
 
 impl sgs_game_impl for sudoku_sys::sgs_game {
-    fn new(bid: sudoku_sys::sgt_bid, numblank: c_uint) -> Self {
-        Self {
+    fn new_with(seed: sudoku_sys::URND32, bid: sudoku_sys::sgt_bid, numblank: c_uint) -> Self {
+        let mut s = Self {
             rng: sudoku_sys::GLIBCRNG::new(),
             bid: bid,
             numblank: numblank,
@@ -94,7 +95,14 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
             majorver: sudoku_sys::SUDOKU_ENGINE_MAJOR_VERSION,
             minorver: sudoku_sys::SUDOKU_ENGINE_MINOR_VERSION,
             sminorver: sudoku_sys::SUDOKU_ENGINE_SMINOR_VERSION,
-        }
+        };
+
+        s.seed(seed);
+        s
+    }
+
+    fn new() -> Self {
+        Self::new_with(0, 0, 0)
     }
 
     fn setvalue(&mut self, value: sudoku_sys::sgt_set, x: c_uint, y: c_uint) {

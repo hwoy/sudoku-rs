@@ -48,7 +48,7 @@ pub trait sgs_game_impl {
     fn setvalue(&mut self, value: sudoku_sys::sgt_set, x: c_uint, y: c_uint);
     fn getvalue(&self, x: c_uint, y: c_uint) -> sudoku_sys::sgt_set;
 
-    fn setbid(&mut self, bid: c_uint);
+    fn setbid(&mut self, bid: c_uint) -> &mut Self;
     fn getvalue_x(&self, y: c_uint) -> sudoku_sys::sgt_set;
     fn getvalue_y(&self, x: c_uint) -> sudoku_sys::sgt_set;
 
@@ -57,7 +57,7 @@ pub trait sgs_game_impl {
 
     fn countvalue(&self, x: c_uint, y: c_uint) -> c_uint;
 
-    fn seed(&mut self, seed: sudoku_sys::URND32);
+    fn seed(&mut self, seed: sudoku_sys::URND32) -> &mut Self;
     fn rand(&mut self) -> c_uint;
     fn random(&mut self, min: c_uint, max: c_uint) -> c_uint;
 
@@ -80,7 +80,7 @@ pub trait sgs_game_impl {
 
     fn createsudoku_rnd(&mut self, sd: c_uint);
 
-    fn setnblank(&mut self, numblank: c_uint);
+    fn setnblank(&mut self, numblank: c_uint) -> &mut Self;
 
     fn getnblank(&self) -> c_uint;
 }
@@ -113,8 +113,11 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         unsafe { sudoku_sys::sgf_getvalue(self, x, y) }
     }
 
-    fn setbid(&mut self, bid: c_uint) {
-        unsafe { sudoku_sys::sgf_setbid(self, bid) }
+    fn setbid(&mut self, bid: c_uint) -> &mut Self {
+        unsafe {
+            sudoku_sys::sgf_setbid(self, bid);
+        }
+        self
     }
 
     fn getvalue_x(&self, y: c_uint) -> sudoku_sys::sgt_set {
@@ -137,8 +140,9 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         unsafe { sudoku_sys::sgf_countvalue(self, x, y) }
     }
 
-    fn seed(&mut self, seed: sudoku_sys::URND32) {
+    fn seed(&mut self, seed: sudoku_sys::URND32) -> &mut Self {
         unsafe { sudoku_sys::sgf_seed(self, seed) }
+        self
     }
 
     fn rand(&mut self) -> c_uint {
@@ -189,8 +193,9 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
         unsafe { sudoku_sys::sgf_createsudoku_rnd(self, sd) }
     }
 
-    fn setnblank(&mut self, numblank: c_uint) {
+    fn setnblank(&mut self, numblank: c_uint) -> &mut Self {
         unsafe { sudoku_sys::sgf_setnblank(self, numblank) }
+        self
     }
 
     fn getnblank(&self) -> c_uint {

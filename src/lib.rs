@@ -203,6 +203,48 @@ impl sgs_game_impl for sudoku_sys::sgs_game {
     }
 }
 
+pub struct Builder {
+    seed: sudoku_sys::URND32,
+    bid: sudoku_sys::sgt_bid,
+    numblank: c_uint,
+}
+
+impl Builder {
+    pub fn new_with(seed: sudoku_sys::URND32, bid: sudoku_sys::sgt_bid, numblank: c_uint) -> Self {
+        Self {
+            seed: seed,
+            bid: bid,
+            numblank: numblank,
+        }
+    }
+    pub fn new() -> Self {
+        Self {
+            seed: 0,
+            bid: 0,
+            numblank: 0,
+        }
+    }
+
+    pub fn seed(mut self, seed: sudoku_sys::URND32) -> Self {
+        self.seed = seed;
+        self
+    }
+
+    pub fn setbid(mut self, bid: sudoku_sys::sgt_bid) -> Self {
+        self.bid = bid;
+        self
+    }
+
+    pub fn setnblank(mut self, numblank: c_uint) -> Self {
+        self.numblank = numblank;
+        self
+    }
+
+    pub fn build(self) -> sudoku_sys::sgs_game {
+        sudoku_sys::sgs_game::new_with(self.seed, self.bid, self.numblank)
+    }
+}
+
 pub fn seed_from_entropy() -> sudoku_sys::URND32 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
